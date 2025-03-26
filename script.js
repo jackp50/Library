@@ -35,9 +35,14 @@ addBookToLibrary("The Sweatshirt", "Linda Blind", 90, true);
 function displayBooks() {
     for (let i = 0; i < myLibrary.length; i++) {
         console.log(myLibrary[i]);
+        const bookTemplate = document.createElement("div");
+        bookTemplate.textContent = myLibrary[i].info();
+        container.appendChild(bookTemplate);
+        bookTemplate.id = "book-template"  
     }
 }
 
+const container = document.querySelector("#container");
 displayBooks();
 
 
