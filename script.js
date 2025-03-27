@@ -1,8 +1,11 @@
-
+//container div i made in the html file
 const container = document.querySelector("#container");
+//array the books will go into
 let myLibrary = [];
 
+//constructor object for book
 function Book(title, author, pages, read) {
+    //gives book random id
     this.id = crypto.randomUUID();
     this.title = title;
     this.author = author;
@@ -10,21 +13,18 @@ function Book(title, author, pages, read) {
     this.read = read;
     this.info = function () {
         // Dynamically calculate read status
+        //syntax: condition ? True False
         const readStatus = this.read ? 'Yes' : 'No';
         return `${this.title} by ${this.author}, ${this.pages} pages, read: ${readStatus}`;
     }
 }
-
-Book.prototype.info = function () {
-    
-};
 
 function addBookToLibrary(title, author, pages, read) {
     // Creates a new Book object
     const newBook = new Book(title, author, pages, read);
     // Add the new Book to the array
     myLibrary.push(newBook); 
-    console.log(`Book added: ${newBook.info()}`);
+    // console.log(`Book added: ${newBook.info()}`);
 };
 
 function deleteBook(bookId) {
