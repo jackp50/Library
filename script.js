@@ -1,6 +1,6 @@
 
 const container = document.querySelector("#container");
-const myLibrary = [];
+let myLibrary = [];
 
 function Book(title, author, pages, read) {
     this.id = crypto.randomUUID();
@@ -27,8 +27,15 @@ function addBookToLibrary(title, author, pages, read) {
     console.log(`Book added: ${newBook.info()}`);
 };
 
-function deleteBook() {
-    
+function deleteBook(bookId) {
+    // Filter out the book with the matching ID
+    myLibrary = myLibrary.filter((book) => book.id !== bookId);
+
+    // Log the updated library for debugging
+    console.log(myLibrary);
+
+    // Refresh the library
+    displayBooks();
 }
 
 function displayBooks() {
@@ -37,13 +44,17 @@ function displayBooks() {
         console.log(myLibrary[i]);
         const bookTemplate = document.createElement("div");
         bookTemplate.textContent = myLibrary[i].info();
+        bookTemplate.id = `book-template-${myLibrary[i].id}`;
         container.appendChild(bookTemplate);
         bookTemplate.id = "book-template"
         const deleteButton = document.createElement("button");
         container.appendChild(deleteButton);
         deleteButton.textContent = "Delete";
+        //attach bookID to button
+        deleteButton.setAttribute("data-id", myLibrary[i].id);
         deleteButton.addEventListener("click", () => {
-            deleteBook();
+            const bookId = event.target.getAttribute("data-id"); // Get book ID
+            deleteBook(bookId); // Call the delete function
     });
     }
     
