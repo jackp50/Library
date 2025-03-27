@@ -7,8 +7,8 @@
     border: 3px solid seagreen;
 }
 
-#book-button {
-    color: black;
+[id^="book-template-"] {
+    border: 3px solid green;
 }
 
 #read {

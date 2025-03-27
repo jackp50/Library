@@ -9,15 +9,15 @@ function Book(title, author, pages, read) {
     this.pages = pages;
     this.read = read;
     this.info = function () {
-        let readStatus;
-        if (read) {
-    readStatus = 'Yes';
-     } else {
-        readStatus = 'No';
-    }
-        return (`${title} by ${author}, ${pages} pages, read: ${readStatus}`);
+        // Dynamically calculate read status
+        const readStatus = this.read ? 'Yes' : 'No';
+        return `${this.title} by ${this.author}, ${this.pages} pages, read: ${readStatus}`;
     }
 }
+
+Book.prototype.info = function () {
+    
+};
 
 function addBookToLibrary(title, author, pages, read) {
     // Creates a new Book object
@@ -30,34 +30,44 @@ function addBookToLibrary(title, author, pages, read) {
 function deleteBook(bookId) {
     // Filter out the book with the matching ID
     myLibrary = myLibrary.filter((book) => book.id !== bookId);
-
     // Log the updated library for debugging
     console.log(myLibrary);
-
     // Refresh the library
     displayBooks();
 }
 
 function displayBooks() {
-    container.innerHTML = '';
-    for (let i = 0; i < myLibrary.length; i++) {
-        console.log(myLibrary[i]);
+    container.innerHTML = ''; // Clear the container before rendering
+
+    myLibrary.forEach((book) => {
+        // Create the book template
         const bookTemplate = document.createElement("div");
-        bookTemplate.textContent = myLibrary[i].info();
-        bookTemplate.id = `book-template-${myLibrary[i].id}`;
+        bookTemplate.textContent = book.info();
+        bookTemplate.id = `book-template-${book.id}`;
         container.appendChild(bookTemplate);
-        bookTemplate.id = "book-template"
+
+        // Create the delete button
         const deleteButton = document.createElement("button");
-        container.appendChild(deleteButton);
         deleteButton.textContent = "Delete";
-        //attach bookID to button
-        deleteButton.setAttribute("data-id", myLibrary[i].id);
-        deleteButton.addEventListener("click", () => {
-            const bookId = event.target.getAttribute("data-id"); // Get book ID
-            deleteBook(bookId); // Call the delete function
+        deleteButton.setAttribute("data-id", book.id); // Attach book ID
+        deleteButton.addEventListener("click", (event) => {
+            const bookId = event.target.getAttribute("data-id");
+            deleteBook(bookId); // Remove the book from the library
+        });
+        bookTemplate.appendChild(deleteButton);
+
+        // Create the read status button
+        const readStatusButton = document.createElement("button");
+        readStatusButton.textContent = book.read ? "Mark as Unread" : "Mark as Read";
+        readStatusButton.setAttribute("data-id", book.id); // Attach book ID
+        readStatusButton.addEventListener("click", (event) => {
+            const bookId = event.target.getAttribute("data-id");
+            const currentBook = myLibrary.find((b) => b.id === bookId); // Find the book
+            currentBook.changeStatus(); // Toggle read status
+            displayBooks(); // Refresh the library display
+        });
+        bookTemplate.appendChild(readStatusButton);
     });
-    }
-    
 }
 // button that bring up form to create new book entry
 const buttonContainer = document.querySelector("#button-container");
@@ -109,6 +119,15 @@ bookButton.id = "book-button"
     submitButton.textContent = 'Submit';
     form.appendChild(submitButton);
 
+    //prototype function that can change read status
+    Book.prototype.changeStatus = function(bookId) {
+        // Toggle the `read` property of the current book instance
+        // If true, it becomes false; if false, it becomes true
+        this.read = !this.read;
+        console.log(myLibrary);
+        // Refresh the library
+        displayBooks();
+    }
     bookButton.addEventListener("click", () => {
         dialog.showModal(); // Opens the dialog as a modal
         });
